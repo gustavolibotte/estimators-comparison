@@ -1,5 +1,8 @@
 import os
+import numpy as np
+
 from pycps import Random, TextFilePulseShape
+from filters.of2 import OF2
 
 from datasets.setup_dataset import SetupDataset
 
@@ -29,8 +32,16 @@ def main():
     dataset_samples = dataset_obj.get_dataset_samples()
     dataset_amplitudes = dataset_obj.get_dataset_amplitudes()
 
-    print(dataset_times, dataset_samples, dataset_amplitudes)
+    # Testing the filters
+    n_filter = 7
+    t_filter = np.array([-75.0, -50.0, -25.0, 0.0, 25.0, 50.0, 75.0])
+    g = np.array([0.0000, 0.0172, 0.4524, 1.0000, 0.5633, 0.1493, 0.0424])
+    dg = np.array([0.00004019,  0.00333578,  0.03108120, 0.00000000, -0.02434490,
+                   -0.00800683, -0.00243344])
     
+    of2 = OF2(n_filter, t_filter, g, dg)
+    w = of2.of2()
+    print(w)
 
 if __name__ == '__main__':
     try:
