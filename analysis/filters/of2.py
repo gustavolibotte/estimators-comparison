@@ -7,17 +7,6 @@ class OF2(Filter):
     """
     OF2 filter class that extends Filter class and implements a specific type of filter.
 
-    Parameters:
-    -----------
-    n_filter: int
-        The number of filters.
-    t_filter: float
-        The filter bandwidth.
-    g: ndarray
-        A numpy array of shape (n_filter,) containing the filter coefficients.
-    dg: ndarray
-        A numpy array of shape (n_filter,) containing the derivative of the filter coefficients.
-
     Attributes:
     -----------
     _mat_a: ndarray
@@ -26,10 +15,6 @@ class OF2(Filter):
         A numpy array of shape (n_filter + 3,) that represents the vector b of the OF2 filter.
     _vec_x: ndarray
         A numpy array of shape (n_filter + 3,) that represents the solution of the system Ax = b.
-    _weights: ndarray
-        A numpy array of shape (n_filter,) that represents the weights of the filter.
-    _status: bool
-        A boolean that represents the status of the filter. True if the filter weights are valid, False otherwise.
 
     Methods:
     --------
@@ -53,24 +38,10 @@ class OF2(Filter):
     def __init__(self, n_filter, t_filter, g, dg):
         """
         Initializes the OF2 filter object.
-
-        Parameters
-        ----------
-        n_filter : int
-            The number of filters.
-        t_filter : float
-            The filter bandwidth.
-        g : ndarray
-            A numpy array of shape (n_filter,) containing the filter coefficients.
-        dg : ndarray
-            A numpy array of shape (n_filter,) containing the derivative of the filter coefficients.
         """
         self._mat_a = np.zeros((n_filter + 3, n_filter + 3))
         self._vec_b = np.zeros(n_filter + 3)
         self._vec_x = None
-        
-        self._weights = None
-        self._status = False
 
         super().__init__(n_filter, t_filter, g, dg)
 
@@ -120,7 +91,7 @@ class OF2(Filter):
         """
         self._vec_b[self._n_filter] = 1.0
     
-    def of2(self):
+    def go_filtering(self):
         """
         Runs the OF2 filter and returns the filter weights and status.
 

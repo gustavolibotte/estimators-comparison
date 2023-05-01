@@ -3,6 +3,7 @@ import numpy as np
 
 from pycps import Random, TextFilePulseShape
 from filters.of2 import OF2
+from filters.least_squares import LS
 
 from datasets.setup_dataset import SetupDataset
 
@@ -40,8 +41,11 @@ def main():
                    -0.00800683, -0.00243344])
     
     of2 = OF2(n_filter, t_filter, g, dg)
-    w = of2.of2()
+    w = of2.go_filtering()
     print(w)
+
+    ls = LS(n_filter, t_filter, g, dg)
+    ls.go_filtering()
 
 if __name__ == '__main__':
     try:
