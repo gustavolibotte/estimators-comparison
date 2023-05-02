@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 
 class Filter(ABC):
     """
+    Abstract class for filter methods.
+
     Attributes:
     -----------
     _n_filter: int

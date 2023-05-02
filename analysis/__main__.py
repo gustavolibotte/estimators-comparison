@@ -1,5 +1,6 @@
 import os
 import numpy as np
+from numpy.random import uniform, standard_normal
 
 from pycps import Random, TextFilePulseShape
 from filters.of2 import OF2
@@ -40,12 +41,22 @@ def main():
     dg = np.array([0.00004019,  0.00333578,  0.03108120, 0.00000000, -0.02434490,
                    -0.00800683, -0.00243344])
     
+    # OF2
     of2 = OF2(n_filter, t_filter, g, dg)
     w = of2.go_filtering()
     print(w)
 
-    ls = LS(n_filter, t_filter, g, dg)
-    ls.go_filtering()
+    # Constrained least-squares
+    temp_amplitudes = 1023.0 * uniform(low=0.0, high=1.0, size=n_events)
+    temp_noise = standard_normal(size=(n_events, n_filter))
+
+    temp_samples = np.zeros((n_events, n_filter))
+    for i in range(n_events):
+        temp_samples[i] = temp_amplitudes[i] * g + temp_noise[i]
+
+    ls = LS(temp_samples, temp_amplitudes, n_filter, t_filter, g, dg)
+    w = ls.go_filtering()
+    print(w)
 
 if __name__ == '__main__':
     try:
