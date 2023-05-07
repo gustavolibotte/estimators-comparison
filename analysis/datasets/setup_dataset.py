@@ -30,6 +30,8 @@ class SetupDataset:
         Returns an array of the samples of the pulses in the dataset.
     get_dataset_amplitudes()
         Returns an array of the amplitudes of the pulses in the dataset.
+    get_flatten_dataset()
+        Returns a flattened array of the times, samples, and amplitudes of the pulses in the dataset.
 
     Private Methods
     ---------------
@@ -135,3 +137,27 @@ class SetupDataset:
             The array of amplitudes.
         """
         return np.array(self._dataset.time)
+    
+    def get_flatten_dataset(self):
+        """
+        Returns a flattened version of the dataset.
+
+        The method gets the times, samples and amplitudes of the dataset, flattens them,
+        and creates a new array with shape (self.n_slices * self.slice_size, 3) that
+        contains the flattened values.
+
+        Returns:
+            np.ndarray: A flattened version of the dataset with shape
+            (self.n_slices * self.slice_size, 3), where each row contains the flattened
+            values of the time, sample and amplitude of a slice.
+        """
+        times = self.get_dataset_times().flatten()
+        samples = self.get_dataset_samples().flatten()
+        amplitudes = self.get_dataset_amplitudes().flatten()
+
+        flattened_dataset = np.zeros((self.n_slices * self.slice_size, 3))
+        flattened_dataset[:, 0] = times
+        flattened_dataset[:, 1] = samples
+        flattened_dataset[:, 2] = amplitudes
+
+        return flattened_dataset
