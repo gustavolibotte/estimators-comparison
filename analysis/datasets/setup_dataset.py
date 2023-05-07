@@ -9,8 +9,10 @@ class SetupDataset:
     ----------
     pulse_shape : pycps.TextFilePulseShape
         Object of the reference pulse shape.
-    n_events : int
-        The number of events in the dataset.
+    n_slices : int
+        The number of slices in the dataset.
+    slice_size : int
+        Window size.
     _pulse_generator : PulseGenerator or None
         The pulse generator object used to create the pulses.
     _dataset_generator : DatasetGenerator or None
@@ -39,17 +41,20 @@ class SetupDataset:
         and occupancy.
 
     """
-    def __init__(self, pulse_shape, n_events):
+    def __init__(self, pulse_shape, n_slices, slice_size):
         """
         Parameters
         ----------
         pulse_shape : pycps.TextFilePulseShape
             Object of the reference pulse shape.
-        n_events : int
-            The number of events in the dataset.
+        n_slices : int
+            The number of slices in the dataset.
+        slice_size : int
+            Window size
         """
         self.pulse_shape = pulse_shape
-        self.n_events = n_events
+        self.n_slices = n_slices
+        self.slice_size = slice_size
 
         self._pulse_generator = None
         self._dataset_generator = None
@@ -66,7 +71,7 @@ class SetupDataset:
         self._pulse_generator.set_phase_distribution(
             PulseGenerator.UNIFORM_INT_DISTRIBUTION, [-5, 5])
         self._pulse_generator.set_deformation_level(0.01)
-        self._pulse_generator.set_pedestal(40)
+        self._pulse_generator.set_pedestal(0)
 
     def _setup_dataset_generator(self, occupancy):
         """
@@ -84,7 +89,7 @@ class SetupDataset:
         self._dataset_generator.set_noise_params(0, 1.5)
         self._dataset_generator.set_occupancy(occupancy)
 
-    def create_dataset(self, occupancy):
+    def create_sliced_dataset(self, occupancy):
         """
         Generates the dataset of simulated pulses with the specified occupancy.
 
@@ -96,7 +101,7 @@ class SetupDataset:
         self._setup_pulse_generator()
         self._setup_dataset_generator(occupancy)
 
-        self._dataset = self._dataset_generator.generate_continuous_dataset(self.n_events)
+        self._dataset = self._dataset_generator.generate_sliced_dataset(self.n_slices, self.slice_size)
 
     def get_dataset_times(self):
         """
