@@ -69,11 +69,11 @@ class SetupDataset:
         """
         self._pulse_generator = PulseGenerator(self.pulse_shape)
         self._pulse_generator.set_amplitude_distribution(
-            PulseGenerator.EXPONENTIAL_DISTRIBUTION, [100])
+            PulseGenerator.UNIFORM_REAL_DISTRIBUTION, [0, 1023])
         self._pulse_generator.set_phase_distribution(
             PulseGenerator.UNIFORM_INT_DISTRIBUTION, [-5, 5])
         self._pulse_generator.set_deformation_level(0.01)
-        self._pulse_generator.set_pedestal(0)
+        self._pulse_generator.set_pedestal(0.0)
 
     def _setup_dataset_generator(self, occupancy):
         """
@@ -88,7 +88,7 @@ class SetupDataset:
         self._dataset_generator = DatasetGenerator()
         self._dataset_generator.set_pulse_generator(self._pulse_generator)
         self._dataset_generator.set_sampling_rate(25.0)
-        self._dataset_generator.set_noise_params(0, 1.5)
+        self._dataset_generator.set_noise_params(0.0, 1.5)
         self._dataset_generator.set_occupancy(occupancy)
 
     def create_sliced_dataset(self, occupancy):
@@ -136,7 +136,7 @@ class SetupDataset:
         ndarray
             The array of amplitudes.
         """
-        return np.array(self._dataset.time)
+        return np.array(self._dataset.amplitudes)
     
     def get_flatten_dataset(self):
         """
