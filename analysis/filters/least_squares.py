@@ -33,7 +33,7 @@ class LS(Filter):
 
     """
 
-    def __init__(self, samples, amplitudes, n_filter, t_filter, g, dg):
+    def __init__(self, samples, amplitudes, n_filter):
         """
         Parameters
         ----------
@@ -43,12 +43,6 @@ class LS(Filter):
             A 2D numpy array of shape (n_samples, 1) representing the amplitudes of the filter samples.
         n_filter : int
             The number of filter coefficients.
-        t_filter : float
-            The filter time interval.
-        g : float
-            The filter gain.
-        dg : float
-            The filter derivative gain.
         """
 
         self._samples = samples
@@ -59,7 +53,7 @@ class LS(Filter):
 
         self.vec_w = None
 
-        super().__init__(n_filter, t_filter, g, dg)
+        super().__init__(n_filter, None, None, None)
     
     def _predict_w(self):
         """
@@ -71,7 +65,7 @@ class LS(Filter):
             A 2D numpy array of shape (n_filter, 1) representing the weight vector of the filter.
         """
 
-        return inv(self._samples.T @ self._samples) @ self._samples.T @ self._amplitudes.T
+        return inv(self._samples.T @ self._samples) @ self._samples.T @ self._amplitudes
     
     def _solve_cstr_ls(self):
         """
@@ -99,9 +93,7 @@ class LS(Filter):
         Checks the solution for feasibility.
         """
 
-        if np.all(-1.0 <= self._weights) and \
-            np.all(self._weights <= 1.0) and \
-                np.abs(np.sum(self._weights)) < 1e-12:
+        if np.abs(np.sum(self._weights)) < 1e-12:
             self._status = True
         else:
             self._status = False
