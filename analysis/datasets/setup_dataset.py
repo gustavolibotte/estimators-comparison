@@ -1,4 +1,4 @@
-from pycps import TextFilePulseShape, PulseGenerator, DatasetGenerator
+from pycps import PulseGenerator, DatasetGenerator
 import numpy as np
 
 class SetupDataset:
