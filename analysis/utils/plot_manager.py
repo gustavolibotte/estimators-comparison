@@ -35,7 +35,7 @@ class GraphPlotter:
         self.fig, self.ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=figsize)
 
     def hist_plot(self, y, mean, stdev, xlabel):
-        self.ax.hist(y, bins=50, density=True, rwidth=0.85, color="C0")
+        self.ax.hist(y, bins=70, density=True, rwidth=0.85, color="C0")
 
         self.ax.set_xlabel(xlabel)
         self.ax.set_xlim((mean - 3 * stdev, mean + 3 * stdev))
