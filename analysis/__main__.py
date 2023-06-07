@@ -5,7 +5,7 @@ import numpy as np
 from cases.study_cases import StudyCases
 from utils.array_file_manager import ArrayFileManager
 
-def main(data_path, occupancy, slice_size):
+def calculate_results(data_path, occupancy, slice_size):
     if np.mod(slice_size, 2) != 0:
         # Loading data
         filename = f"training_occupancy_{occupancy}.csv"
@@ -28,19 +28,16 @@ def main(data_path, occupancy, slice_size):
 
         # Running analysis
         analysis_cases = StudyCases(training_dataset, test_dataset, n_slices, slice_size, occupancy)
-        analysis_cases.run_case_1(save_file=True)
+        analysis_cases.run_case_1(save_file=True, plot_results=True)
     else:
         raise ValueError("Slice size must be an odd number.")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--data_path", type=str, help="Calorimetry pulse data relative path (default: data/)")
-    parser.add_argument("--occupancy", type=float, help="Occupancy (0.1 | 0.3 | 0.5)")
-    parser.add_argument("--slice_size", type=int, help="Slice size (integer greater than zero)")
+    parser.add_argument("--data_path", required=False, type=str, help="Calorimetry pulse data relative path (default: data/)")
+    parser.add_argument("--occupancy", required=True, type=float, help="Occupancy (0.1 | 0.3 | 0.5)")
+    parser.add_argument("--slice_size", required=True, type=int, help="Slice size (integer greater than zero)")
     
     args = parser.parse_args()
-    if args.data_path and args.occupancy and args.slice_size:
-        main(args.data_path, args.occupancy, args.slice_size)
-    else:
-        print("Please specify both the calorimetry pulse data relative path and occupancy.")
+    calculate_results(args.data_path, args.occupancy, args.slice_size)

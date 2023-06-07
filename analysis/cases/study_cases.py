@@ -2,7 +2,6 @@ import numpy as np
 from filters.least_squares import LS
 from statistics.analysis_statistics import AnalysisStatistics
 from utils.array_file_manager import ArrayFileManager
-from utils.plot_manager import GraphPlotter
 
 class StudyCases:
     """
@@ -38,7 +37,7 @@ class StudyCases:
         self.slice_size = slice_size
         self.occupancy = occupancy
     
-    def run_case_1(self, save_file):
+    def run_case_1(self, save_file, plot_results):
         """
         Runs study case 1 by estimating amplitudes, computing errors, and plotting results.
         
@@ -46,6 +45,8 @@ class StudyCases:
         ----------
         save_file : bool
             Whether to save the error amplitudes to a file.
+        plot_results : bool
+            Whether to plot the error amplitudes.
         
         Returns
         -------
@@ -68,16 +69,11 @@ class StudyCases:
             _, _, test_amplitudes = self.__handle_dataset(self.test_dataset)
             error_amplitudes = AnalysisStatistics.compare_amplitudes(test_amplitudes, self.n_slices,
                                                                      self.slice_size, estimated_amplitudes)
-            
-            # Computing sample mean and standard deviation
-            error_mean = np.mean(error_amplitudes)
-            error_stdev = np.std(error_amplitudes)
-            
-            # Plotting results
-            plotter = GraphPlotter(figsize=(5, 3))
-            plotter.hist_plot(error_amplitudes, error_mean, error_stdev, "Error")
 
             if save_file:
+                ArrayFileManager.save_array_to_file("results/",
+                                                    f"amplitudes_occupancy_{self.occupancy}_slice_{self.slice_size}.csv",
+                                                    estimated_amplitudes)
                 ArrayFileManager.save_array_to_file("results/",
                                                     f"error_occupancy_{self.occupancy}_slice_{self.slice_size}.csv",
                                                     error_amplitudes)
